@@ -40,7 +40,7 @@ mod eventfd {
 
             let file = unsafe { File::from_raw_fd(fd.try_into().unwrap()) };
             selector
-                .register(fd, token, Interest::READABLE)
+                .register(fd as i32, token, Interest::READABLE)
                 .map(|()| Waker { fd: file })
         }
 

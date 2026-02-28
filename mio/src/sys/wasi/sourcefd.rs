@@ -1,7 +1,7 @@
 use crate::{event, Interest, Registry, Token};
 
 use std::io;
-use std::os::wasi::io::RawFd;
+use std::os::fd::RawFd;
 
 /// Adapter for [`RawFd`] providing an [`event::Source`] implementation.
 ///
@@ -15,7 +15,7 @@ impl<'a> event::Source for SourceFd<'a> {
         token: Token,
         interests: Interest,
     ) -> io::Result<()> {
-        registry.selector().register(*self.0 as u32, token, interests)
+        registry.selector().register(*self.0, token, interests)
     }
 
     fn reregister(
@@ -24,10 +24,10 @@ impl<'a> event::Source for SourceFd<'a> {
         token: Token,
         interests: Interest,
     ) -> io::Result<()> {
-        registry.selector().reregister(*self.0 as u32, token, interests)
+        registry.selector().reregister(*self.0, token, interests)
     }
 
     fn deregister(&mut self, registry: &Registry) -> io::Result<()> {
-        registry.selector().deregister(*self.0 as u32)
+        registry.selector().deregister(*self.0)
     }
 }
