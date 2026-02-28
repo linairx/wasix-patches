@@ -69,8 +69,10 @@ pub use event::Events;
 pub use interest::Interest;
 pub use poll::{Poll, Registry};
 pub use token::Token;
-#[cfg(any(not(target_os = "wasi"), target_vendor = "wasmer"))]
+#[cfg(not(target_os = "wasi"))]
 pub use waker::Waker;
+#[cfg(all(target_os = "wasi", target_vendor = "wasmer"))]
+pub use sys::Waker;
 
 #[cfg(all(unix, feature = "os-ext"))]
 #[cfg_attr(docsrs, doc(cfg(all(unix, feature = "os-ext"))))]
