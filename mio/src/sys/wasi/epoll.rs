@@ -76,7 +76,8 @@ impl Selector {
         })
     }
 
-    pub fn register(&self, fd: wasi::Fd, token: Token, interests: Interest) -> io::Result<()> {
+    pub fn register(&self, fd: RawFd, token: Token, interests: Interest) -> io::Result<()> {
+        let fd = fd as wasi::Fd;
         let mut event = wasi::EpollEvent {
             events: interests_to_epoll(interests),
             data: wasi::EpollData {
@@ -84,7 +85,7 @@ impl Selector {
                 fd: fd,
                 data1: 0,
                 data2: usize::from(token) as u64,
-            }   
+            }
         };
 
         unsafe {
@@ -99,7 +100,8 @@ impl Selector {
         .map_err(io_err)
     }
 
-    pub fn reregister(&self, fd: wasi::Fd, token: Token, interests: Interest) -> io::Result<()> {
+    pub fn reregister(&self, fd: RawFd, token: Token, interests: Interest) -> io::Result<()> {
+        let fd = fd as wasi::Fd;
         let mut event = wasi::EpollEvent {
             events: interests_to_epoll(interests),
             data: wasi::EpollData {
@@ -122,7 +124,8 @@ impl Selector {
         .map_err(io_err)
     }
 
-    pub fn deregister(&self, fd: wasi::Fd) -> io::Result<()> {
+    pub fn deregister(&self, fd: RawFd) -> io::Result<()> {
+        let fd = fd as wasi::Fd;
         unsafe {
             wasi::epoll_ctl(
                 self.ep,

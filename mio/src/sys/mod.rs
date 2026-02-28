@@ -53,7 +53,7 @@ cfg_os_poll! {
 #[cfg(any(
     unix,
     target_os = "hermit",
-    all(target_os = "wasi", not(target_env = "p1"))
+    all(target_os = "wasi", not(target_env = "p1"), not(target_vendor = "wasmer"))
 ))]
 cfg_os_poll! {
     mod unix;
