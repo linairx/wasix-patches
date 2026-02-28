@@ -18,7 +18,7 @@ use std::io;
 
 #[cfg(target_vendor = "wasmer")]
 cfg_os_poll! {
-    pub(crate) mod sourcefd;
+    pub mod sourcefd;
     #[allow(unused)]
     pub use self::sourcefd::SourceFd;
 
