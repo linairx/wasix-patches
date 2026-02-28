@@ -23,7 +23,7 @@ cfg_os_poll! {
     pub use self::sourcefd::SourceFd;
 
     pub(crate) mod waker;
-    pub(crate) use self::waker::Waker;
+    pub use self::waker::Waker;
 
     #[cfg(target_vendor = "wasmer")]
     #[path = "epoll.rs"]
