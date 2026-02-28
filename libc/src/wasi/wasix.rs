@@ -7,7 +7,7 @@ use crate::{
 
 // Import types from parent wasi module
 use super::{
-    iovec, mode_t, off_t, pid_t, sigset_t, size_t, ssize_t, timespec, time_t,
+    iovec, mode_t, off_t, pid_t, size_t, ssize_t, timespec, time_t,
 };
 
 pub type sighandler_t = usize;
@@ -1015,7 +1015,7 @@ extern "C" fn default_handler(sig: c_int) {
     if sig == SIGCHLD || sig == SIGURG || sig == SIGWINCH || sig == SIGCONT {
         return;
     } else {
-        unsafe { core::intrinsics::abort() };
+        panic!("Unhandled signal: {}", sig);
     }
 }
 
