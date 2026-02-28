@@ -1,5 +1,6 @@
 mod eventfd {
     use std::io;
+    use crate::poll::Registry;
     use crate::sys::Selector;
     use crate::{Interest, Token};
     use std::fs::File;
@@ -20,7 +21,8 @@ mod eventfd {
     struct AlignedU64Bytes([u8; 8]);
 
     impl Waker {
-        pub fn new(selector: &Selector, token: Token) -> io::Result<Waker> {
+        pub fn new(registry: &Registry, token: Token) -> io::Result<Waker> {
+            let selector = registry.selector();
             let fd = unsafe {
                 wasi::fd_event(0, 0)
                     .map_err(|errno| io::Error::from_raw_os_error(errno.raw() as i32))?

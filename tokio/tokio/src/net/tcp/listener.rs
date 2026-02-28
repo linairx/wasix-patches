@@ -272,7 +272,7 @@ impl TcpListener {
     /// [`std::net::TcpListener`]: std::net::TcpListener
     /// [`set_nonblocking`]: fn@std::net::TcpListener::set_nonblocking
     pub fn into_std(self) -> io::Result<std::net::TcpListener> {
-        #[cfg(any(unix, target_vendor = "wasmer"))]
+        #[cfg(all(unix, not(target_os = "wasi")))]
         {
             use std::os::unix::io::{FromRawFd, IntoRawFd};
             self.io
