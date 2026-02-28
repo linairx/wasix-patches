@@ -80,6 +80,7 @@ cfg_os_poll! {
     pub(crate) use self::wasi::*;
     #[cfg(feature = "os-ext")]
     pub use self::wasi::SourceFd;
+    pub use self::wasi::Waker;
 }
 
 cfg_not_os_poll! {
