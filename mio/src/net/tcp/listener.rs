@@ -85,7 +85,7 @@ impl TcpListener {
         set_reuseaddr(&listener.inner, true)?;
 
         bind(&listener.inner, addr)?;
-        listen(&listener.inner, LISTEN_BACKLOG_SIZE)?;
+        listen(&listener.inner, LISTEN_BACKLOG_SIZE as u32)?;
         Ok(listener)
     }
 

@@ -74,6 +74,30 @@ cfg_os_poll! {
                 // return.
                 f(io)
             }
+
+            pub(crate) fn register(
+                &mut self,
+                registry: &crate::Registry,
+                token: crate::Token,
+                interests: crate::Interest,
+                fd: std::os::fd::RawFd,
+            ) -> io::Result<()> {
+                registry.selector().register(fd, token, interests)
+            }
+
+            pub(crate) fn reregister(
+                &mut self,
+                registry: &crate::Registry,
+                token: crate::Token,
+                interests: crate::Interest,
+                fd: std::os::fd::RawFd,
+            ) -> io::Result<()> {
+                registry.selector().reregister(fd, token, interests)
+            }
+
+            pub(crate) fn deregister(&mut self, registry: &crate::Registry, fd: std::os::fd::RawFd) -> io::Result<()> {
+                registry.selector().deregister(fd)
+            }
         }
     }
 }
