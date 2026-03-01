@@ -126,6 +126,14 @@ impl TcpListener {
         }
     }
 
+    // WASIX-specific bind implementation
+    #[cfg(all(target_os = "wasi", target_vendor = "wasmer"))]
+    pub async fn bind(addr: &str) -> io::Result<TcpListener> {
+        let std_listener = net::TcpListener::bind(addr)?;
+        std_listener.set_nonblocking(true)?;
+        TcpListener::from_std(std_listener)
+    }
+
     /// Accepts a new incoming connection from this listener.
     ///
     /// This function will yield once a new TCP connection is established. When
@@ -305,6 +313,13 @@ impl TcpListener {
             let io = PollEvented::new(listener)?;
             Ok(TcpListener { io })
         }
+    }
+
+    // WASIX-specific new implementation
+    #[cfg(all(target_os = "wasi", target_vendor = "wasmer"))]
+    pub(crate) fn new(listener: mio::net::TcpListener) -> io::Result<TcpListener> {
+        let io = PollEvented::new(listener)?;
+        Ok(TcpListener { io })
     }
 
     /// Returns the local address that this listener is bound to.
