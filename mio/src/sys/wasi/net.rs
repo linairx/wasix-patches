@@ -4,6 +4,10 @@ use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
 #[cfg(target_vendor = "wasmer")]
 use ::wasix as wasi;
 
+// Define constants not available in wasi libc
+const AF_UNIX: libc::c_int = 1;
+const SOCK_RAW: libc::c_int = 3;
+
 pub(crate) fn new_ip_socket(addr: SocketAddr, socket_type: libc::c_int) -> io::Result<libc::c_int> {
     let domain = match addr {
         SocketAddr::V4(..) => libc::AF_INET,
@@ -19,7 +23,7 @@ pub(crate) fn wasi_address_type(domain: libc::c_int) -> io::Result<wasi::Address
             libc::AF_INET => wasi::ADDRESS_FAMILY_INET4,
             libc::AF_INET6 => wasi::ADDRESS_FAMILY_INET6,
             libc::AF_UNSPEC => wasi::ADDRESS_FAMILY_UNSPEC,
-            libc::AF_UNIX => wasi::ADDRESS_FAMILY_UNIX,
+            AF_UNIX => wasi::ADDRESS_FAMILY_UNIX,
             _ => return Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 "address family is unknown",
@@ -33,7 +37,7 @@ pub(crate) fn wasi_socket_type(socket_type: libc::c_int) -> io::Result<wasi::Soc
         match socket_type {
             libc::SOCK_STREAM => wasi::SOCK_TYPE_SOCKET_STREAM,
             libc::SOCK_DGRAM => wasi::SOCK_TYPE_SOCKET_DGRAM,
-            libc::SOCK_RAW => wasi::SOCK_TYPE_SOCKET_RAW,
+            SOCK_RAW => wasi::SOCK_TYPE_SOCKET_RAW,
             _ => return Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 "socket type is unknown",
@@ -47,9 +51,9 @@ pub(crate) fn new_socket(domain: libc::c_int, socket_type: libc::c_int) -> io::R
     let proto = match socket_type {
         libc::SOCK_STREAM => wasi::SOCK_PROTO_TCP,
         libc::SOCK_DGRAM => wasi::SOCK_PROTO_UDP,
-        libc::SOCK_RAW if domain == libc::AF_INET => wasi::SOCK_PROTO_IP,
-        libc::SOCK_RAW if domain == libc::AF_INET6 => wasi::SOCK_PROTO_IPV6,
-        libc::SOCK_RAW if domain == libc::AF_UNSPEC => wasi::SOCK_PROTO_IPV6,
+        SOCK_RAW if domain == libc::AF_INET => wasi::SOCK_PROTO_IP,
+        SOCK_RAW if domain == libc::AF_INET6 => wasi::SOCK_PROTO_IPV6,
+        SOCK_RAW if domain == libc::AF_UNSPEC => wasi::SOCK_PROTO_IPV6,
         _ => return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
             "unsupported socket protocol",
